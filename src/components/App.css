@@ -5,3 +5,22 @@ body,
     padding: 1em;
     height: 100vh;
 }
+
+.messages {
+    height: 610px;
+    overflow-y: scroll;
+    width: 1000px;
+}
+
+.message__form {
+    position: fixed !important;
+    bottom: 1em;
+    margin-left: 320px !important;
+    left: 1em;
+    right: 1em;
+}
+
+.message__self {
+    border-left: 2px solid orange;
+    padding-left: 8px;
+}
