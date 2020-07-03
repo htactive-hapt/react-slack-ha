@@ -61,5 +61,6 @@ ReactDOM.render(
 			<RootWithAuth />
 		</Router>
 	</Provider>,
-	document.getElementById('root'));
+	document.getElementById('root')
+);
 registerServiceWorker();

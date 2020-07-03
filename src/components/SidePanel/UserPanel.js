@@ -10,7 +10,11 @@ class UserPanel extends React.Component {
 	dropdownOptions = () => [
 		{
 			key: 'user',
-			text: <span>Signed in as <strong>{this.state.user.displayName}</strong></span>,
+			text: (
+				<span>
+					Signed in as <strong>{this.state.user.displayName}</strong>
+				</span>
+			),
 			disable: "true"
 		},
 		{
@@ -21,7 +25,7 @@ class UserPanel extends React.Component {
 			key: 'signout',
 			text: <span onClick={this.handleSignout}>Sign out</span>,
 		},
-	]
+	];
 
 	handleSignout = () => {
 		firebase
@@ -32,31 +36,34 @@ class UserPanel extends React.Component {
 
 	render() {
 		const { user } = this.state;
+
 		return (
 			<Grid style={{ background: '#19224A' }}>
 				<Grid.Column>
 					<Grid.Row style={{ padding: '1.2em', margin: 0 }}>
+
 						<Header inverted floated="left" as="h2">
 							<Icon name="code" />
-							<Header.Content>
-								SlackHa
-              </Header.Content>
+							<Header.Content> SlackHa </Header.Content>
 						</Header>
+
+
 						<Header style={{ padding: '0.25em' }} as="h4" inverted>
 							<Dropdown
 								trigger={
 									<span>
 										<Image src={user.photoURL} spaced="right" avatar />
 										{user.displayName}
-									</span>}
+									</span>
+								}
 								options={this.dropdownOptions()}
 							/>
 						</Header>
 					</Grid.Row>
 				</Grid.Column>
 			</Grid>
-		)
+		);
 	}
-}
+};
 
 export default UserPanel;

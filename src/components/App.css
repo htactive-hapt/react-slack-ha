@@ -9,7 +9,6 @@ body,
 .messages {
     height: 610px;
     overflow-y: scroll;
-    width: 1000px;
 }
 
 .message__form {
@@ -23,4 +22,16 @@ body,
 .message__self {
     border-left: 2px solid orange;
     padding-left: 8px;
+}
+
+.message__image {
+    padding: 1em;
+}
+
+.progress__bar {
+    margin: 0.3em 0 0 0 !important;
+}
+
+.menu {
+    padding-bottom: 2em;
 }
