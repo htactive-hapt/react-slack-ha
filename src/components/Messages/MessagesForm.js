@@ -76,7 +76,7 @@ class MessagesForm extends React.Component {
 		if (this.props.isPrivateChannel) {
 			return `chat/private-${this.state.channel.id}`;
 		} else {
-			return `chat/pulic`;
+			return "chat/public";
 		}
 	};
 

@@ -35,3 +35,10 @@ body,
 .menu {
     padding-bottom: 2em;
 }
+
+.color__container {
+    position: relative;
+    overflow: hidden;
+    width: 35px;
+    border-radius: 3px;
+}
