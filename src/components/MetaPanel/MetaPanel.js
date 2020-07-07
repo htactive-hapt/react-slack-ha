@@ -92,4 +92,5 @@ class MetaPanel extends React.Component {
 		);
 	}
 }
+
 export default MetaPanel;

@@ -15,6 +15,7 @@ class Channels extends React.Component {
 		channelDetails: '',
 		channelsRef: firebase.database().ref('channels'),
 		messagesRef: firebase.database().ref('messages'),
+		typingRef: firebase.database().ref('typing'),
 		notifications: [],
 		firstLoad: true
 	};
@@ -24,7 +25,8 @@ class Channels extends React.Component {
 	};
 
 	componentWillUnmount() {
-		this.removeListerners();
+		console.log('err');
+		// this.removeListerners();
 	};
 
 	addListeners = () => {
@@ -124,7 +126,11 @@ class Channels extends React.Component {
 	};
 
 	changeChannel = channel => {
-		this.setActiveChannel(channel)
+		this.setActiveChannel(channel);
+		this.state.typingRef
+			.child(this.state.channel.id)
+			.child(this.state.user.uid)
+			.remove()
 		this.clearNotifications();
 		this.props.setCurrentChannel(channel);
 		this.props.setPrivateChannel(false)
@@ -158,7 +164,7 @@ class Channels extends React.Component {
 
 		if (count > 0) return count;
 	}
-	
+
 	displayChannels = channels =>
 		channels.length > 0 &&
 		channels.map(channel => (

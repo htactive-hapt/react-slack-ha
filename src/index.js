@@ -6,6 +6,7 @@ import Register from './components/Auth/Register';
 import Spinner from './Spinner';
 import registerServiceWorker from './registerServiceWorker';
 import firebase from './firebase';
+
 import 'semantic-ui-css/semantic.min.css';
 
 import { createStore } from 'redux'
@@ -14,8 +15,12 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import rootReducer from './reducers';
 import { setUser, clearUser } from './actions'
 
-import { BrowserRouter as Router, Switch, Route, withRouter } from 'react-router-dom'
-
+import {
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	withRouter
+} from 'react-router-dom'
 
 const store = createStore(rootReducer, composeWithDevTools());
 
@@ -31,6 +36,7 @@ class Root extends React.Component {
 			}
 		});
 	}
+
 	render() {
 		return this.props.isLoading ? (
 			<Spinner />
