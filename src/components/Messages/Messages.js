@@ -7,6 +7,7 @@ import MessagesHeader from './MessagesHeader'
 import MessagesForm from './MessagesForm'
 import Message from './Message'
 import Typing from './Typing'
+import Skeleton from './Skeleton'
 
 class Messages extends React.Component {
 	state = {
@@ -25,16 +26,50 @@ class Messages extends React.Component {
 		searchResults: [],
 		typingRef: firebase.database().ref("typing"),
 		typingUsers: [],
-		connectedRef: firebase.database().ref(".info/connected")
+		connectedRef: firebase.database().ref(".info/connected"),
+		listeners: [],
 	};
 
 	componentDidMount() {
-		const { channel, user } = this.state;
+		const { channel, user, listeners } = this.state;
 
 		if (channel && user) {
+			this.removeListeners(listeners)
 			this.addListeners(channel.id);
 			this.addUserStarsListener(channel.id, user.uid);
 		}
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (this.messageEnd) {
+			this.scrollToBottom();
+		}
+	}
+
+	componentWillUnmount() {
+		this.removeListeners(this.state.listeners);
+		this.state.connectedRef.off();
+	}
+
+	removeListeners = listeners => {
+		listeners.forEach(listener => {
+			listener.ref.child(listener.id).off(listener.event);
+		})
+	}
+
+	addToListeners = (id, ref, event) => {
+		const index = this.state.listeners.findIndex(listener => {
+			return listener.id === id && listener.ref === ref && listener.event === event;
+		})
+
+		if (index === -1) {
+			const newListener = { id, ref, event };
+			this.setState({ listeners: this.state.listeners.concat(newListener) })
+		}
+	}
+
+	scrollToBottom = () => {
+		this.messageEnd.scrollIntoView({ behavior: 'smooth' })
 	}
 
 	addListeners = channelId => {
@@ -54,6 +89,7 @@ class Messages extends React.Component {
 			this.countUniqueUsers(loadedMessages);
 			this.countUserPosts(loadedMessages);
 		});
+		this.addToListeners(channelId, ref, 'child_added');
 	};
 
 	addTypingListeners = channelId => {
@@ -67,6 +103,7 @@ class Messages extends React.Component {
 				this.setState({ typingUsers });
 			}
 		});
+		this.addToListeners(channelId, this.state.typingRef, 'child_add');
 
 		this.state.typingRef.child(channelId).on("child_removed", snap => {
 			const index = typingUsers.findIndex(user => user.id === snap.key);
@@ -75,6 +112,7 @@ class Messages extends React.Component {
 				this.setState({ typingUsers });
 			}
 		});
+		this.addToListeners(channelId, this.state.typingRef, 'child_removed');
 
 		this.state.connectedRef.on("value", snap => {
 			if (snap.val() === true) {
@@ -223,9 +261,18 @@ class Messages extends React.Component {
 			</div>
 		));
 
+	displayMessagesSkeleton = loading =>
+		loading ? (
+			<React.Fragment>
+				{[...Array(10)].map((_, i) => (
+					<Skeleton key={i} />
+				))}
+			</React.Fragment>
+		) : null;
+
 	render() {
 
-		const { messagesRef, messages, channel, user, numUniqueUsers, searchTerm, searchResults, searchLoading, privateChannel, isChannelStarred, typingUsers } = this.state
+		const { messagesRef, messages, channel, user, numUniqueUsers, searchTerm, searchResults, searchLoading, privateChannel, isChannelStarred, typingUsers, messagesLoading } = this.state
 
 		return (
 			<React.Fragment>
@@ -241,10 +288,14 @@ class Messages extends React.Component {
 
 				<Segment>
 					<Comment.Group className="messages">
+						{this.displayMessagesSkeleton(messagesLoading)}
 						{searchTerm
 							? this.displayMessages(searchResults)
 							: this.displayMessages(messages)}
 						{this.displayTypingUsers(typingUsers)}
+						<div ref={node => (this.messageEnd = node)}>
+
+						</div>
 					</Comment.Group>
 				</Segment>
 

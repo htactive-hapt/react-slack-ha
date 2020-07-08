@@ -17,14 +17,22 @@ class Starred extends React.Component {
 		}
 	}
 
+	componentWillUnmount() {
+		this.removeLlistener();
+	}
+
+	removeLlistener = () => {
+		this.state.usersRef.child(`${this.state.user.uid}/starred`).off();
+	}
+
 	addListeners = userId => {
 		this.state.usersRef
 			.child(userId)
 			.child('starred')
 			.on('child_added', snap => {
 				const starredChannel = { id: snap.key, ...snap.val() };
-				this.setState({ 
-					starredChannels: [...this.state.starredChannels, starredChannel] 
+				this.setState({
+					starredChannels: [...this.state.starredChannels, starredChannel]
 				});
 			});
 
